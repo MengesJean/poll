@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Poll" ADD COLUMN "dateEnd" DATETIME;
+ALTER TABLE "Poll" ADD COLUMN "dateStart" DATETIME;
