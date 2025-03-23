@@ -1,36 +1,150 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Application de Sondage
 
-## Getting Started
+Cette application permet aux utilisateurs de créer et de participer à des sondages. Elle est construite avec Next.js, Prisma, et inclut l'authentification avec NextAuth.
 
-First, run the development server:
+## Fonctionnalités
+
+- Création de sondages avec plusieurs options
+- Système de vote
+- Authentification des utilisateurs (locale et Google)
+- Interface utilisateur responsive avec Tailwind CSS et Radix UI
+
+## Prérequis
+
+- Node.js 18 ou plus récent
+- npm, yarn ou pnpm
+
+## Installation
+
+1. Cloner le dépôt
+2. Installer les dépendances :
+
+```bash
+npm install
+# ou
+yarn install
+# ou
+pnpm install
+```
+
+## Configuration des variables d'environnement
+
+Créez un fichier `.env` à la racine du projet avec les variables suivantes :
+
+```env
+# URL de connexion à la base de données SQLite
+DATABASE_URL="file:./dev.db"
+
+# Clé secrète pour NextAuth (chaîne aléatoire pour sécuriser les sessions)
+AUTH_SECRET="votre-clé-secrète-aléatoire"
+
+# OAuth Google (optionnel - pour l'authentification Google)
+AUTH_GOOGLE_ID="votre-client-id-google"
+AUTH_GOOGLE_SECRET="votre-client-secret-google"
+```
+
+### Générer une clé secrète
+
+Pour générer une clé secrète aléatoire pour `AUTH_SECRET`, vous pouvez utiliser la commande suivante :
+
+```bash
+openssl rand -base64 32
+```
+
+## Configuration de Prisma
+
+### Initialisation de la base de données
+
+Pour configurer la base de données et générer le client Prisma :
+
+```bash
+# Générer le client Prisma
+npx prisma generate
+
+# Créer les tables dans la base de données
+npx prisma migrate dev --name init
+```
+
+### Réinitialisation de la base de données (développement uniquement)
+
+Si vous avez besoin de réinitialiser votre base de données pendant le développement :
+
+```bash
+npx prisma migrate reset
+```
+
+Cette commande supprimera toutes les données et réappliquera les migrations.
+
+### Explorer vos données
+
+Pour visualiser et modifier vos données via une interface graphique :
+
+```bash
+npx prisma studio
+```
+
+### Mise à jour du schéma
+
+Après toute modification du fichier `prisma/schema.prisma`, exécutez :
+
+```bash
+# Créer une nouvelle migration
+npx prisma migrate dev --name nom-de-votre-modification
+
+# Mettre à jour le client Prisma
+npx prisma generate
+```
+
+## Développement
+
+Lancer le serveur de développement :
 
 ```bash
 npm run dev
-# or
+# ou
 yarn dev
-# or
+# ou
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvrez [http://localhost:3000](http://localhost:3000) avec votre navigateur pour voir le résultat.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Structure du projet
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+/prisma        - Schéma de base de données et migrations
+/src
+  /app         - Routes et pages de l'application (App Router)
+  /components  - Composants réutilisables
+  /lib         - Utilitaires et fonctions partagées
+```
 
-## Learn More
+## Modèles de données
 
-To learn more about Next.js, take a look at the following resources:
+L'application utilise les modèles de données suivants :
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **User** : Informations sur les utilisateurs
+- **Poll** : Sondages créés par les utilisateurs
+- **Option** : Options de réponse pour chaque sondage
+- **Vote** : Votes des utilisateurs pour les options
+- **Account** : Comptes d'authentification (pour NextAuth)
+- **Session** : Sessions utilisateur
+- **VerificationToken** : Jetons de vérification pour l'authentification
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Déploiement
 
-## Deploy on Vercel
+L'application peut être déployée sur Vercel ou toute autre plateforme compatible avec Next.js.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+# Construire l'application pour la production
+npm run build
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Démarrer le serveur de production
+npm run start
+```
+
+## Bonnes pratiques
+
+- Ne jamais commiter le fichier `prisma/dev.db` dans Git
+- Gardez vos variables d'environnement sécurisées
+- Exécutez toujours `npx prisma generate` après avoir tiré des changements qui modifient le schéma Prisma
